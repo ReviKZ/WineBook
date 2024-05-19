@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -19,15 +20,14 @@ public class UserController {
      * @param user The User we want to register.
      * @return Created if OK, otherwise Bad Request.
      */
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/register")
-    HttpStatus register(@RequestBody User user) {
+    void register(@RequestBody User user) {
         var isCreated = userRepository.register(user.username(), user.password());
 
-        if (isCreated) {
-            return HttpStatus.CREATED;
+        if (!isCreated) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There was already a user with that username!");
         }
-
-        return HttpStatus.BAD_REQUEST;
     }
 
     /**

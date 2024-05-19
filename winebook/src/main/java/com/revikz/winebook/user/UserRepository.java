@@ -26,10 +26,19 @@ public class UserRepository {
      * @return True, if it could be added to the DB, otherwise False.
      */
     public boolean register(String username, String password) {
+        var user = jdbcClient.sql("SELECT * FROM \"User\" WHERE username = :username") // Gets the user with the
+                .param("username", username)                                                                             // given username
+                .query(User.class)
+                .optional();
+
+        if (user.isPresent()) { // Checks if already in DB
+            return false;
+        }
+
         Hash hash = Password.hash(password) // Hashing the password
                 .with(bcrypt);              // with bcrypt.
 
-        var update = jdbcClient.sql("INSERT INTO 'User'(username, password) VALUES(?,?)") // Adds the user to the
+        var update = jdbcClient.sql("INSERT INTO \"User\"(username, password) VALUES(?,?)") // Adds the user to the
                 .params(username, hash.getResult())                               // DB and gets how many lines
                 .update();                                                                // were updated.
 
@@ -44,7 +53,7 @@ public class UserRepository {
      * otherwise an Empty User Model.
      */
     public Optional<User> login(String username, String password) {
-        var user = jdbcClient.sql("SELECT username, password FROM 'User' WHERE username = :username") // Gets the user with the
+        var user = jdbcClient.sql("SELECT * FROM \"User\" WHERE username = :username") // Gets the user with the
                 .param("username", username)                                                    // given username
                 .query(User.class)
                 .optional();
@@ -67,7 +76,7 @@ public class UserRepository {
      */
     public Optional<User> getUserById(Integer id) {
 
-        return jdbcClient.sql("SELECT * FROM 'User' WHERE id = :id")
+        return jdbcClient.sql("SELECT * FROM User WHERE id = :id")
                 .params("id", id)
                 .query(User.class)
                 .optional();
@@ -79,7 +88,7 @@ public class UserRepository {
      * @return True, if it was successfully deleted, otherwise False.
      */
     public boolean delete(Integer id) {
-        var update = jdbcClient.sql("DELETE FROM 'User' WHERE id = :id")
+        var update = jdbcClient.sql("DELETE FROM User WHERE id = :id")
                 .param("id", id)
                 .update();
 
