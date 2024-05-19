@@ -8,7 +8,8 @@ A backend része JAVA 21-el és Java Spring 3.2.5-el készül REST API-al, MVC
 
 Nos azért, mert elsősorban Web fejlesztőnek készültem és röviden a határidő
 előtt nem kísérletezik az ember. Ezt ismerem, ezzel vállalok kevés kockázatot
-hogy időben elkészüljek.
+hogy időben elkészüljek. Ezen felül moduláris, azaz ha nem tetszik a frontend, 
+bármilyen másikat lehet készíteni, a backend működőképes marad.
 
 ### MVC | Repository Pattern
 
