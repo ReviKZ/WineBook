@@ -3,6 +3,9 @@ package com.revikz.winebook.post;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
 public class PostRepository {
     private final JdbcClient jdbcClient;
@@ -12,18 +15,33 @@ public class PostRepository {
     }
 
     /**
+     * Gets all stored records in Post table.
+     * @return List of Posts.
+     */
+    public List<Post> getAll() {
+        return jdbcClient.sql("SELECT * FROM \"Post\"")
+                .query(Post.class)
+                .list();
+    }
+
+    /**
+     * Gets last item in Post table.
+     * @return Last post.
+     */
+    public Optional<Post> getLast() {
+        return jdbcClient.sql("SELECT * FROM \"Post\" ORDER BY id DESC LIMIT 1")
+                .query(Post.class)
+                .optional();
+    }
+
+    /**
      * Creates a Post.
      * @param post The Post we want to create.
      * @return True if it was Created, otherwise False.
      */
     public boolean create(Post post) {
-        Integer authorId = null;
-        if (post.author().isPresent()) {           // If there isn't an Author present, it means he wants to stay anonym.
-            authorId = post.author().get().id();  // Otherwise set the id.
-        }
-
-        var createdLines = jdbcClient.sql("INSERT INTO 'Post'(autohor_id, title, content, likes, dislikes) VALUES (?,?,?,?) ") // Add the Post.
-                .params(authorId, post.title(),post.content(),post.likes(),post.dislikes())
+        var createdLines = jdbcClient.sql("INSERT INTO \"Post\"(author_id, title, content, likes, dislikes) VALUES (?,?,?,?,?) ") // Add the Post.
+                .params(null, post.title(), post.content(), post.likes(), post.dislikes())
                 .update();
 
         return createdLines == 1;
@@ -36,13 +54,8 @@ public class PostRepository {
      * @return True if it was edited, otherwise False.
      */
     public boolean update(Post post, Integer id) {
-        Integer authorId = null;
-        if (post.author().isPresent()) {
-            authorId = post.author().get().id();
-        }
-
-        var updatedLines = jdbcClient.sql("UPDATE 'Post' SET author_id = ?, title = ?, content = ? WHERE id = ?") // Update the Post
-                .params(authorId, post.title(), post.content(), id)
+        var updatedLines = jdbcClient.sql("UPDATE \"Post\" SET author_id = ?, title = ?, content = ? WHERE id = ?") // Update the Post
+                .params(null, post.title(), post.content(), id)
                 .update();
 
         return updatedLines == 1;
@@ -54,7 +67,7 @@ public class PostRepository {
      * @return True if it was successfully deleted, otherwise False.
      */
     public boolean delete(Integer id) {
-        var update = jdbcClient.sql("DELETE FROM 'Post' WHERE id = :id") // Delete the Post
+        var update = jdbcClient.sql("DELETE FROM \"Post\" WHERE id = :id") // Delete the Post
                 .param("id", id)
                 .update();
 
@@ -67,7 +80,7 @@ public class PostRepository {
      * @return True if it was added, otherwise False.
      */
     public boolean like(Integer id) {
-        var currentPost = jdbcClient.sql("SELECT * FROM 'Post' WHERE id = :id") // Get the Post with the id.
+        var currentPost = jdbcClient.sql("SELECT * FROM \"Post\" WHERE id = :id") // Get the Post with the id.
                 .param("id", id)
                 .query(Post.class)
                 .optional();
@@ -79,7 +92,7 @@ public class PostRepository {
         Integer likes = currentPost.get().likes(); // Get the likes
         likes++; // Increase the likes by one
 
-        var updatedLines = jdbcClient.sql("UPDATE 'Post' SET likes = :likes WHERE id = :id") // Update the DB
+        var updatedLines = jdbcClient.sql("UPDATE \"Post\" SET likes = :likes WHERE id = :id") // Update the DB
                 .param("likes", likes)
                 .param("id", id)
                 .update();
@@ -93,7 +106,7 @@ public class PostRepository {
      * @return True if removed, otherwise False.
      */
     public boolean removeLike(Integer id) {
-        var currentPost = jdbcClient.sql("SELECT * FROM 'Post' WHERE id = :id") // Get the Post with the id.
+        var currentPost = jdbcClient.sql("SELECT * FROM \"Post\" WHERE id = :id") // Get the Post with the id.
                 .param("id", id)
                 .query(Post.class)
                 .optional();
@@ -108,7 +121,7 @@ public class PostRepository {
         }
         likes--; // Decrement likes by one.
 
-        var updatedLines = jdbcClient.sql("UPDATE 'Post' SET likes = :likes WHERE id = :id") // Update Post in DB.
+        var updatedLines = jdbcClient.sql("UPDATE \"Post\" SET likes = :likes WHERE id = :id") // Update Post in DB.
                 .param("likes", likes)
                 .param("id", id)
                 .update();
@@ -122,7 +135,7 @@ public class PostRepository {
      * @return True if it was added, otherwise False.
      */
     public boolean dislike(Integer id) {
-        var currentPost = jdbcClient.sql("SELECT * FROM 'Post' WHERE id = :id") // Get the Post with the id.
+        var currentPost = jdbcClient.sql("SELECT * FROM \"Post\" WHERE id = :id") // Get the Post with the id.
                 .param("id", id)
                 .query(Post.class)
                 .optional();
@@ -134,7 +147,7 @@ public class PostRepository {
         Integer dislikes = currentPost.get().dislikes(); // Get the dislikes
         dislikes++; // Increase the dislikes by one
 
-        var updatedLines = jdbcClient.sql("UPDATE 'Post' SET dislikes = :dislikes WHERE id = :id") // Update the DB
+        var updatedLines = jdbcClient.sql("UPDATE \"Post\" SET dislikes = :dislikes WHERE id = :id") // Update the DB
                 .param("dislikes", dislikes)
                 .param("id", id)
                 .update();
@@ -148,7 +161,7 @@ public class PostRepository {
      * @return True if removed, otherwise False.
      */
     public boolean removeDislike(Integer id) {
-        var currentPost = jdbcClient.sql("SELECT * FROM 'Post' WHERE id = :id") // Get the Post with the id.
+        var currentPost = jdbcClient.sql("SELECT * FROM \"Post\" WHERE id = :id") // Get the Post with the id.
                 .param("id", id)
                 .query(Post.class)
                 .optional();
@@ -163,7 +176,7 @@ public class PostRepository {
         }
         dislikes--; // Decrement likes by one.
 
-        var updatedLines = jdbcClient.sql("UPDATE 'Post' SET dislikes = :dislikes WHERE id = :id") // Update Post in DB.
+        var updatedLines = jdbcClient.sql("UPDATE \"Post\" SET dislikes = :dislikes WHERE id = :id") // Update Post in DB.
                 .param("dislikes", dislikes)
                 .param("id", id)
                 .update();

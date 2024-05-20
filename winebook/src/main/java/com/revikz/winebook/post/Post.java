@@ -4,7 +4,7 @@ import com.revikz.winebook.user.User;
 
 import java.util.Optional;
 
-public record Post(Integer id, Optional<User> author, String title, String content, Integer likes, Integer dislikes) {
+public record Post(Integer id, String title, String content, Integer likes, Integer dislikes) {
     public Post {
         if (title.isBlank()) {
             throw new IllegalArgumentException("There must be a title!");

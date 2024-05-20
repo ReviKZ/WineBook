@@ -120,7 +120,7 @@ public class UserRegisterLoginView extends JFrame implements ActionListener {
                 var loggedInUser = userRestClient.login(user); // Send the request and depending on the return value show dialog window or open new page.
                 if (loggedInUser != null) {
                     this.dispose();
-                    ForumView forumView = new ForumView(loggedInUser);
+                    ForumView forumView = new ForumView();
                     forumView.setVisible(true);
                 }
                 else{
