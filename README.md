@@ -43,24 +43,21 @@ Szükség lesz
  * Java 21-re: https://www.oracle.com/java/technologies/downloads/#java21
  * PostgresSQL-re: https://www.postgresql.org/download/
 
-A PostgresSQL telepítésénél fontos, hogy megjegyezzük a felhasználó és jelszót,
-ugyanis később szükség lesz rá.
+A PostgresSQL telepítésénél fontos, hogy a postgres felhasználóhoz az "admin" jelszót válasszuk, ugyanis a buildelt verzió ezzel fut!
 
 SQL CLI-be készítsük el az adatbázist:
 ```
 CREATE DATABASE winebook;
 ```
 
-Ezek után a **winebook\src\main\resources** mappában lesz egy **application.properties**
-file. Ebbe bemásolni az adatbázis url-jét, a felhasználónevet és a jelszavat:
-```
-spring.datasource.url=jdbc:postgresql://localhost:5432/winebook
-spring.datasource.username=postgres  
-spring.datasource.password={te jelszavad}
-```
-Amennyiben nem vagy haladó szintű adatbázis felhasználó, ne írj át semmit a jelszón kívül!
-
 Ha ez megvan a a **winebook\src\main\resources** mappában lesz egy **schema.sql**
 file. Ezt futtassuk le, ezek az adatbázis táblái.
 
-Ha ezzel készen vagyunk, 
+Ha ezzel készen vagyunk, CLI-ben navigáljunk el abba a mappába, ahová letöltöttük a projektet, azon belül is a target mappába.
+Itt pedig futtassuk a 
+```
+java -jar winebook-0.0.1-SNAPSHOT.jar
+```
+parancsot.
+
+Ha minden sikerült, el is indult! :)
