@@ -1,0 +1,14 @@
+com\revikz\winebook\post\ForumView.class
+com\revikz\winebook\post\PostRestClient$1.class
+com\revikz\winebook\user\UserController.class
+com\revikz\winebook\post\ForumView$2.class
+com\revikz\winebook\user\UserRegisterLoginView.class
+com\revikz\winebook\user\UserRestClient.class
+com\revikz\winebook\post\Post.class
+com\revikz\winebook\user\UserRepository.class
+com\revikz\winebook\post\PostRepository.class
+com\revikz\winebook\user\User.class
+com\revikz\winebook\post\PostController.class
+com\revikz\winebook\post\PostRestClient.class
+com\revikz\winebook\post\ForumView$1.class
+com\revikz\winebook\WinebookApplication.class
