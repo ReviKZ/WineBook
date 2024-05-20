@@ -1,5 +1,6 @@
 package com.revikz.winebook.user;
 
+import com.revikz.winebook.post.ForumView;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -63,6 +64,7 @@ public class UserRegisterLoginView extends JFrame implements ActionListener {
         this.registerButton.setText("Register");
         this.loginButton.setText("Log In");
         this.registerButton.setFocusable(false);
+        this.loginButton.setFocusable(false);
 
         // Adding elements to panels.
         this.welcomePanel.add(welcomeText);
@@ -118,7 +120,8 @@ public class UserRegisterLoginView extends JFrame implements ActionListener {
                 var loggedInUser = userRestClient.login(user); // Send the request and depending on the return value show dialog window or open new page.
                 if (loggedInUser != null) {
                     this.dispose();
-                    // TODO: Open new window
+                    ForumView forumView = new ForumView();
+                    forumView.setVisible(true);
                 }
                 else{
                     JOptionPane.showMessageDialog(null, "Something went wrong! Try again!", "Error", JOptionPane.ERROR_MESSAGE);

@@ -1,7 +1,12 @@
 package com.revikz.winebook.post;
 
+import com.revikz.winebook.user.User;
+import jakarta.annotation.Nullable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/post")
@@ -13,19 +18,27 @@ public class PostController {
     }
 
     /**
+     * A Route for getting all the posts
+     * @return The list of the posts.
+     */
+    @GetMapping("")
+    List<Post> getAll() {
+        return postRepository.getAll();
+    }
+
+    /**
      * A Route for creating a Post.
      * @param post The contents of the Post.
-     * @return Created of Ok, otherwise Bad Request.
+     * @return Created if Ok, otherwise Bad Request.
      */
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/create")
-    HttpStatus create(Post post) {
+    void create(@RequestBody Post post) {
         var isCreated = postRepository.create(post);
 
-        if (isCreated) {
-            return HttpStatus.CREATED;
+        if (!isCreated) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-
-        return HttpStatus.BAD_REQUEST;
     }
 
     /**
@@ -34,15 +47,14 @@ public class PostController {
      * @param id The Id of the original Post.
      * @return Ok if OK, otherwise Not Modified
      */
+    @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
-    HttpStatus update(@RequestBody Post post, @PathVariable Integer id) {
+    void update(@RequestBody Post post, @PathVariable Integer id) {
         var isUpdated = postRepository.update(post, id);
 
-        if (isUpdated) {
-            return HttpStatus.OK;
+        if (!isUpdated) {
+            throw new ResponseStatusException(HttpStatus.NOT_MODIFIED);
         }
-
-        return HttpStatus.NOT_MODIFIED;
     }
 
     /**
@@ -50,15 +62,29 @@ public class PostController {
      * @param id The Id of the Post we want to delete
      * @return Ok if OK, otherwise Not Modified.
      */
+    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/{id}")
-    HttpStatus delete(@PathVariable Integer id) {
+    void delete(@PathVariable Integer id) {
         var isDeleted = postRepository.delete(id);
 
-        if (isDeleted) {
-            return HttpStatus.OK;
+        if (!isDeleted) {
+            throw new ResponseStatusException(HttpStatus.NOT_MODIFIED);
+        }
+    }
+
+    /**
+     * A Route for getting the last post.
+     * @return The post if there was any, otherwise null.
+     */
+    @GetMapping("/getLast")
+    Post getLast() {
+        var post = postRepository.getLast();
+
+        if (post.isPresent()) {
+            return post.get();
         }
 
-        return HttpStatus.NOT_MODIFIED;
+        return null;
     }
 
     /**
